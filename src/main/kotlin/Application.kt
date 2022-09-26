@@ -13,8 +13,7 @@ import org.litote.kmongo.*
 import routes.initAccountRoute
 import routes.initLogbookRoute
 
-//import routes.accountRoute
-//import routes.ticketRoute
+
 val client = KMongo.createClient()
 val db = client.getDatabase("LICENSEDB")
 fun main(args: Array<String>): Unit = io.ktor.server.netty.EngineMain.main(args)

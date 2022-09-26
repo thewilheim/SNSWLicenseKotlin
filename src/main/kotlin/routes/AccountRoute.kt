@@ -50,7 +50,7 @@ fun Route.initAccountRoute(db: MongoDatabase) {
         post {
             val data = call.receive<User>()
             val hashed = BCrypt.hashpw(data.password, BCrypt.gensalt())
-            val user = User(data.firstName,data.lastName,data.mobile,data.dateOfBirth,data.email, password = hashed,roles = listOf("customer"))
+            val user = User(data.firstName,data.lastName,data.mobile,data.dateOfBirth,data.email, password = hashed,roles = data.roles)
             accountCollection.insertOne(user)
             call.respond(HttpStatusCode.Created)
         }

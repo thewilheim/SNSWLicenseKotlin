@@ -13,7 +13,7 @@ data class User(
     val dateOfBirth:String = "",
     val email:String,
     val password:String,
-    val roles : List<String> = listOf(),
+    val roles : List<String> = listOf("customer"),
     @Serializable(with = ObjectIdAsStringSerializer::class)
     val _id: Id<User> = newId()
 )
