@@ -7,10 +7,10 @@ import org.litote.kmongo.newId
 
 @Serializable
 data class User(
-    val firstName:String,
-    val lastName:String,
-    val mobile:String,
-    val dateOfBirth:String,
+    val firstName:String = "",
+    val lastName:String = "",
+    val mobile:String = "",
+    val dateOfBirth:String = "",
     val email:String,
     val password:String,
     val roles : List<String> = listOf(),

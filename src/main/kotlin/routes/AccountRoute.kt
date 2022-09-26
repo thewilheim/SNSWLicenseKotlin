@@ -23,7 +23,7 @@ fun Route.initAccountRoute(db: MongoDatabase) {
         post {
             val data = call.receive<User>()
 
-            val filter = "{username:/^${data.email}$/i}"
+            val filter = "{email:/^${data.email}$/i}"
             val user = accountCollection.findOne(filter)
 
             if(user == null){
@@ -37,7 +37,7 @@ fun Route.initAccountRoute(db: MongoDatabase) {
             val token = JWT.create()
                 .withAudience("http://localhost:8080")
                 .withIssuer("http://localhost:8080")
-                .withClaim("username",user?.email)
+                .withClaim("email",user?.email)
                 .withClaim("roles",user?.roles)
                 .withExpiresAt(expiry)
                 .sign(Algorithm.HMAC256("secret"))
