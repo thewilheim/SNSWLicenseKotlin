@@ -12,5 +12,5 @@ data class LogbookEntry(
     val instructorLed: Boolean,
     @Serializable(with = ObjectIdAsStringSerializer::class)
     val _id: Id<LogbookEntry> = newId(),
-    val userId: String
+    val userEmail: String
 )
