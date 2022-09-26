@@ -10,5 +10,7 @@ data class LogbookEntry(
     val startTime: String,
     val endTime: String,
     val instructorLed: Boolean,
+    @Serializable(with = ObjectIdAsStringSerializer::class)
     val _id: Id<LogbookEntry> = newId(),
+    val userId: String
 )

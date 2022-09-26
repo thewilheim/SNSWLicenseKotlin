@@ -10,6 +10,8 @@ import io.ktor.server.plugins.cors.routing.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import org.litote.kmongo.*
+import routes.initAccountRoute
+import routes.initLogbookRoute
 
 //import routes.accountRoute
 //import routes.ticketRoute
@@ -51,9 +53,9 @@ fun Application.init() {
         get("/") {
             call.respondText("SNSW License Management System")
         }
-        //accountRoute(db)
-        //authenticate {
-        //   ticketRoute(db)
-        //}
+
+        initAccountRoute(db)
+
+        initLogbookRoute(db)
     }
 }
