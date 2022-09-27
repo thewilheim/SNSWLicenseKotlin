@@ -76,6 +76,16 @@ fun Route.initAccountRoute(db: MongoDatabase) {
         }
     }
 
+    get("/{id}"){
+        val id = call.parameters["id"].toString()
+        val filter = "{_id:ObjectId('$id')}"
+        val entity = accountCollection.findOne(filter)
+        if (entity != null) {
+            call.respond(entity)
+        } else {
+            call.respond((HttpStatusCode.NotFound))
+        }
+    }
 
     route("/search") {
 
