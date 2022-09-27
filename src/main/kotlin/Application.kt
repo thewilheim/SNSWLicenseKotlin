@@ -49,12 +49,15 @@ fun Application.init() {
         }
     }
     routing {
+
         get("/") {
             call.respondText("SNSW License Management System")
         }
 
-        initAccountRoute(db)
+        authenticate {
+            initAccountRoute(db)
+            initLogbookRoute(db)
+        }
 
-        initLogbookRoute(db)
     }
 }
