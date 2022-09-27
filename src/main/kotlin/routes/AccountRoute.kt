@@ -11,6 +11,7 @@ import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import kotlinx.serialization.json.Json
+import models.SearchUserDTO
 import models.User
 import org.litote.kmongo.deleteOne
 import org.litote.kmongo.find
@@ -75,14 +76,26 @@ fun Route.initAccountRoute(db: MongoDatabase) {
         }
     }
 
-    get("/{id}") {
-        val id = call.parameters["id"].toString()
-        val filter = "{_id:ObjectId('$id')}"
-        val entity = accountCollection.findOne(filter)
-        if (entity != null) {
-            call.respond(entity)
-        } else {
-            call.respond((HttpStatusCode.NotFound))
+
+    route("/search") {
+
+        post() {
+            val data = call.receive<SearchUserDTO>()
+
+            val firstNameFilter = "{firstName:/^${data.firstName}$/i}"
+            val lastNameFilter = "{lastName: /^${data.lastName}\$/i}"
+            val dateOfBirthFilter = "{dateOfBirth: /^${data.dateOfBirth}\$/i}"
+
+            val filter = "{\$or:[$firstNameFilter, $lastNameFilter, $dateOfBirthFilter]}"
+
+            val entity = accountCollection.findOne(filter)
+
+            if (entity != null) {
+                call.respond(entity)
+            } else {
+                call.respond((HttpStatusCode.NotFound))
+            }
         }
+
     }
 }
