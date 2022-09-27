@@ -55,9 +55,10 @@ fun Application.init() {
         }
 
         authenticate {
-            initAccountRoute(db)
             initLogbookRoute(db)
         }
+
+        initAccountRoute(db)
 
     }
 }
