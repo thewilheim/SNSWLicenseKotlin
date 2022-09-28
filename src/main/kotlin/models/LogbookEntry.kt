@@ -2,7 +2,6 @@ package models
 
 import ObjectIdAsStringSerializer
 import kotlinx.serialization.Contextual
-import kotlinx.serialization.KSerializer
 import kotlinx.serialization.Serializable
 import DateSerializer
 import org.litote.kmongo.Id
@@ -34,14 +33,12 @@ data class LearnerLicense (
     val practiceLogEntries: MutableList<LogbookEntry> = mutableListOf(),
         ) {
 
-    val totalTime = getTime()
-
-    fun getTime(): Long {
-        var total: Long = 0
-        for(c in practiceLogEntries) {
-            total += c.totalMilliseconds
-        }
-
+    val totalTime: Long
+    get() {
+       var total: Long = 0
+       for (c in practiceLogEntries) {
+           total  += c.totalMilliseconds
+       }
         return total
     }
 }

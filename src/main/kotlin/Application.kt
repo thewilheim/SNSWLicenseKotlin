@@ -11,6 +11,8 @@ import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import org.litote.kmongo.*
 import routes.initAccountRoute
+import routes.initAdminRoute
+import routes.initLicenseRoute
 import routes.initLogbookRoute
 
 
@@ -53,6 +55,8 @@ fun Application.init() {
 
         authenticate {
             initLogbookRoute(db)
+            initLicenseRoute(db)
+            initAdminRoute(db)
         }
 
         initAccountRoute(db)

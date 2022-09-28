@@ -15,11 +15,11 @@ import org.litote.kmongo.*
 import org.litote.kmongo.id.*
 import org.litote.kmongo.util.idValue
 import org.mindrot.jbcrypt.BCrypt
+import LicenseClassDTO
 
 
 fun Route.initLogbookRoute(db: MongoDatabase) {
 
-    val logbookCollection = db.getCollection<LogbookEntry>("hours")
     val licenseCollection = db.getCollection<LearnerLicense>("licenses")
 
     route("/logbook"){
@@ -48,6 +48,7 @@ fun Route.initLogbookRoute(db: MongoDatabase) {
             val filter = "{userEmail:'$email'}"
 
             val userLicense = licenseCollection.findOne(filter)
+
             if(userLicense === null) {
                 return@get call.respond(HttpStatusCode.NotFound)
             }
@@ -61,7 +62,6 @@ fun Route.initLogbookRoute(db: MongoDatabase) {
             val principal = call.principal<JWTPrincipal>()
             val email = principal?.payload?.getClaim("email").toString().replace("\"","")
             val userFilter = "{userEmail:'$email'}"
-
             val userLicense = licenseCollection.findOne(userFilter)
 
             if(userLicense === null) {
@@ -72,23 +72,9 @@ fun Route.initLogbookRoute(db: MongoDatabase) {
             userLicense.practiceLogEntries.removeIf { (it._id as WrappedObjectId).id.toString() == id }
             licenseCollection.updateOne(userLicense)
 
-        }
+            return@delete call.respond(HttpStatusCode.Accepted)
 
-    }
-
-    route("/license") {
-        get() {
-            val principal = call.principal<JWTPrincipal>()
-            val email = principal!!.payload.getClaim("email").asString()
-            val filter = "{userEmail:'$email'}"
-            val userLicense = licenseCollection.findOne(filter)
-            if(userLicense !== null) {
-                call.respond(userLicense)
-            } else {
-                call.respond(HttpStatusCode.NotFound)
-            }
         }
     }
-
 
 }

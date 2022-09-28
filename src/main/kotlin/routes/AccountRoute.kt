@@ -40,7 +40,6 @@ fun getJWT(user:User):String {
 fun Route.initAccountRoute(db: MongoDatabase) {
 
     val accountCollection = db.getCollection<User>("accounts")
-    val licenseCollection = db.getCollection<LearnerLicense>("licenses")
 
 
     route("/login"){
@@ -105,33 +104,6 @@ fun Route.initAccountRoute(db: MongoDatabase) {
             } else {
                 call.respond((HttpStatusCode.NotFound))
             }
-        }
-    }
-
-    route("/search") {
-
-        post() {
-            val data = call.receive<SearchUserDTO>()
-            val firstNameFilter = "{firstName:/^${data.firstName}$/i}"
-            val lastNameFilter = "{lastName: /^${data.lastName}\$/i}"
-            val dateOfBirthFilter = "{dateOfBirth: /^${data.dateOfBirth}\$/i}"
-            val filter = "{\$or:[$firstNameFilter, $lastNameFilter, $dateOfBirthFilter]}"
-            val entity = accountCollection.findOne(filter)
-            if (entity != null) {
-                call.respond(entity)
-            } else {
-                call.respond((HttpStatusCode.NotFound))
-            }
-        }
-    }
-
-
-    route("/issue") {
-
-        post("/learner") {
-            val data = call.receive<LearnerLicense>()
-            licenseCollection.insertOne(data)
-            call.respond(HttpStatusCode.Created,data)
         }
     }
 
