@@ -11,6 +11,7 @@ import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import kotlinx.serialization.json.Json
+import models.LearnerLicense
 import models.SearchUserDTO
 import models.User
 import org.litote.kmongo.deleteOne
@@ -20,6 +21,21 @@ import org.litote.kmongo.getCollection
 import org.mindrot.jbcrypt.BCrypt
 import java.util.*
 
+
+fun getJWT(user:User):String {
+
+    val expiry = Date(System.currentTimeMillis() + 86400000)
+    return JWT.create()
+        .withAudience("http://localhost:8080")
+        .withIssuer("http://localhost:8080")
+        .withClaim("email",user?.email)
+        .withClaim("roles",user?.roles)
+        .withClaim("mobile",user?.mobile)
+        .withExpiresAt(expiry)
+        .sign(Algorithm.HMAC256("secret"))
+
+
+}
 fun Route.initAccountRoute(db: MongoDatabase) {
 
     val accountCollection = db.getCollection<User>("accounts")
@@ -40,14 +56,8 @@ fun Route.initAccountRoute(db: MongoDatabase) {
             if(!valid){
                 return@post call.respond(HttpStatusCode.BadRequest)
             }
-            val expiry = Date(System.currentTimeMillis() + 86400000)
-            val token = JWT.create()
-                .withAudience("http://localhost:8080")
-                .withIssuer("http://localhost:8080")
-                .withClaim("email",user?.email)
-                .withClaim("roles",user?.roles)
-                .withExpiresAt(expiry)
-                .sign(Algorithm.HMAC256("secret"))
+
+            val token = getJWT(user)
 
             return@post call.respond(token)
         }
@@ -55,11 +65,16 @@ fun Route.initAccountRoute(db: MongoDatabase) {
 
     route("/register") {
         post {
+
+
             val data = call.receive<User>()
             val hashed = BCrypt.hashpw(data.password, BCrypt.gensalt())
             val user = User(data.firstName,data.lastName,data.mobile,data.dateOfBirth,data.email, password = hashed,roles = data.roles)
             accountCollection.insertOne(user)
-            call.respond(HttpStatusCode.Created)
+
+            val token = getJWT(user)
+
+            call.respond(HttpStatusCode.Created, token)
         }
     }
 
@@ -108,6 +123,18 @@ fun Route.initAccountRoute(db: MongoDatabase) {
             } else {
                 call.respond((HttpStatusCode.NotFound))
             }
+        }
+
+    }
+
+
+    route("/issue") {
+
+        val licenseCollection = db.getCollection<LearnerLicense>("licenses")
+        post("/learner") {
+            val data = call.receive<LearnerLicense>()
+            licenseCollection.insertOne(data)
+            call.respond(HttpStatusCode.Created,data)
         }
 
     }

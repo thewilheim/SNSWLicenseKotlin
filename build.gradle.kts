@@ -28,6 +28,7 @@ dependencies {
     //https://ktor.io/docs/jwt.html#flow
     implementation("io.ktor:ktor-server-auth:$ktorVersion")
     implementation("io.ktor:ktor-server-auth-jwt:$ktorVersion")
+    implementation ("org.jetbrains.kotlinx:kotlinx-datetime:0.3.2")
     testImplementation(kotlin("test"))
 }
 tasks.test {
