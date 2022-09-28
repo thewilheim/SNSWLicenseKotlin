@@ -50,9 +50,6 @@ fun Application.init() {
     }
     routing {
 
-        get("/") {
-            call.respondText("SNSW License Management System")
-        }
 
         authenticate {
             initLogbookRoute(db)

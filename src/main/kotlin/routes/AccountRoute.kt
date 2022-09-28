@@ -63,27 +63,30 @@ fun Route.initAccountRoute(db: MongoDatabase) {
         }
     }
 
-
-    get {
-        val principal = call.principal<JWTPrincipal>()
-        val email = principal?.payload?.getClaim("email").toString().replace("\"","")
-        val filter = "{email:$email}"
-        val entity = accountCollection.findOne(filter)
-        if(entity != null) {
-            call.respond(entity)
-        } else {
-            call.respond(HttpStatusCode.NotFound)
+    route("/user") {
+        authenticate {
+            get {
+                val principal = call.principal<JWTPrincipal>()
+                val email = principal?.payload?.getClaim("email").toString().replace("\"", "")
+                val filter = "{email:/^$email\$/i}"
+                val entity = accountCollection.findOne(filter)
+                if (entity != null) {
+                    call.respond(entity)
+                } else {
+                    call.respond(HttpStatusCode.NotFound)
+                }
+            }
         }
-    }
 
-    get("/{id}"){
-        val id = call.parameters["id"].toString()
-        val filter = "{_id:ObjectId('$id')}"
-        val entity = accountCollection.findOne(filter)
-        if (entity != null) {
-            call.respond(entity)
-        } else {
-            call.respond((HttpStatusCode.NotFound))
+        get("/{id}") {
+            val id = call.parameters["id"].toString()
+            val filter = "{_id:ObjectId('$id')}"
+            val entity = accountCollection.findOne(filter)
+            if (entity != null) {
+                call.respond(entity)
+            } else {
+                call.respond((HttpStatusCode.NotFound))
+            }
         }
     }
 
