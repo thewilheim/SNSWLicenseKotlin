@@ -31,6 +31,7 @@ fun getJWT(user:User):String {
         .withClaim("email",user?.email)
         .withClaim("roles",user?.roles)
         .withClaim("mobile",user?.mobile)
+        .withClaim("name", user?.firstName + " " + user?.lastName)
         .withExpiresAt(expiry)
         .sign(Algorithm.HMAC256("secret"))
 
