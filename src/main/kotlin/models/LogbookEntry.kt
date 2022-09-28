@@ -31,14 +31,17 @@ data class LearnerLicense (
     val issuedBy: String,
     @Serializable(with = DateSerializer::class) @Contextual
     val issuedDate: Date,
-    val practiceLogEntries: MutableList<LogbookEntry> = mutableListOf()
+    val practiceLogEntries: MutableList<LogbookEntry> = mutableListOf(),
         ) {
-    val totalTime:Long
-    get() {
+
+    val totalTime = getTime()
+
+    fun getTime(): Long {
         var total: Long = 0
-        for(c in practiceLogEntries){
+        for(c in practiceLogEntries) {
             total += c.totalMilliseconds
         }
+
         return total
     }
 }
