@@ -58,6 +58,19 @@ fun Route.initLogbookRoute(db: MongoDatabase) {
             call.respond(entries)
         }
 
+        get("/{email}") {
+            val email = call.parameters["email"].toString()
+            val filter = "{userEmail:'$email'}"
+
+            val userLicense = licenseCollection.findOne(filter)
+
+            if(userLicense === null) {
+                return@get call.respond(HttpStatusCode.NotFound)
+            }
+
+            call.respond(userLicense)
+        }
+
         delete("/{id}"){
             val principal = call.principal<JWTPrincipal>()
             val email = principal?.payload?.getClaim("email").toString().replace("\"","")
