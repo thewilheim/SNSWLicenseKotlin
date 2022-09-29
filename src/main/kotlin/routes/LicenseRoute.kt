@@ -25,7 +25,7 @@ fun Route.initLicenseRoute(db: MongoDatabase) {
             val filter = "{userEmail:'$email'}"
             val userLicense = licenseCollection.findOne(filter)
             if(userLicense !== null) {
-                val licenseDTO = LicenseClassDTO(_id = (userLicense._id as WrappedObjectId).id.toString() ,userEmail = userLicense.userEmail, issuedBy = userLicense.issuedBy, issuedDate = userLicense.issuedDate, practiceLogEntries = userLicense.practiceLogEntries, totalTime = userLicense.totalTime)
+                val licenseDTO = LicenseClassDTO(_id = (userLicense._id as WrappedObjectId).id.toString() ,userEmail = userLicense.userEmail, issuedBy = userLicense.issuedBy, issuedDate = userLicense.issuedDate, practiceLogEntries = userLicense.practiceLogEntries, totalTime = userLicense.totalTime, totalNightTime = userLicense.totalNightTime, totalRemainingTime = userLicense.totalRemainingTime)
                 call.respond(licenseDTO)
             } else {
                 call.respond(HttpStatusCode.NotFound)

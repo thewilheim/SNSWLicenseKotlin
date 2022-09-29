@@ -11,5 +11,7 @@ data class LicenseClassDTO (
     @Serializable(with = DateSerializer::class) @Contextual
     val issuedDate: Date,
     val practiceLogEntries: MutableList<LogbookEntry> = mutableListOf(),
-    val totalTime: Long
+    val totalTime: Long,
+    val totalNightTime: Long,
+    val totalRemainingTime: Long
 )
