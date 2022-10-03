@@ -14,10 +14,7 @@ import kotlinx.serialization.json.Json
 import models.LearnerLicense
 import models.SearchUserDTO
 import models.User
-import org.litote.kmongo.deleteOne
-import org.litote.kmongo.find
-import org.litote.kmongo.findOne
-import org.litote.kmongo.getCollection
+import org.litote.kmongo.*
 import org.mindrot.jbcrypt.BCrypt
 import java.util.*
 
@@ -103,6 +100,16 @@ fun Route.initAccountRoute(db: MongoDatabase) {
                 call.respond(entity)
             } else {
                 call.respond((HttpStatusCode.NotFound))
+            }
+        }
+
+        put{
+            val entity = call.receive<User>()
+            val result = accountCollection.updateOne(entity)
+            if (result.modifiedCount.toInt() == 1){
+                call.respond(HttpStatusCode.OK, entity)
+            } else {
+                call.respond(HttpStatusCode.NotFound)
             }
         }
     }
