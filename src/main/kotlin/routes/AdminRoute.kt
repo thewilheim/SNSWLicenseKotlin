@@ -26,9 +26,12 @@ fun Route.initAdminRoute(db: MongoDatabase) {
             val firstNameFilter = "{firstName:/^${data.firstName}$/i}"
             val lastNameFilter = "{lastName: /^${data.lastName}\$/i}"
             val dateOfBirthFilter = "{dateOfBirth: /^${data.dateOfBirth}\$/i}"
-            val filter = "{\$or:[$firstNameFilter, $lastNameFilter, $dateOfBirthFilter]}"
-            val entity = accountCollection.findOne(filter)
-            if (entity != null) {
+            val mobileFilter = "{mobile: /^${data.mobile}\$/i}"
+            val emailFilter = "{email: /^${data.email}\$/i}"
+
+            val filter = "{\$or:[$firstNameFilter, $lastNameFilter, $dateOfBirthFilter, $mobileFilter, $emailFilter]}"
+            val entity = accountCollection.find(filter).toList()
+            if (entity != null && entity.isNotEmpty()) {
                 call.respond(entity)
             } else {
                 call.respond((HttpStatusCode.NotFound))
