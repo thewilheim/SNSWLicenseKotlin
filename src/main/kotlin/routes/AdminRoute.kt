@@ -3,14 +3,11 @@ package routes
 import com.mongodb.client.MongoDatabase
 import io.ktor.http.*
 import io.ktor.server.application.*
-import io.ktor.server.auth.*
-import io.ktor.server.auth.jwt.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import models.LearnerLicense
 import org.litote.kmongo.*
-import org.litote.kmongo.id.*
-import LicenseClassDTO
+import RoleBasedAuthorization
 import io.ktor.server.request.*
 import models.SearchUserDTO
 import models.User
@@ -23,7 +20,7 @@ fun Route.initAdminRoute(db: MongoDatabase) {
 
 
     route("/search") {
-
+        install(RoleBasedAuthorization){roles= listOf("CSR")}
         post() {
             val data = call.receive<SearchUserDTO>()
             val firstNameFilter = "{firstName:/^${data.firstName}$/i}"
@@ -41,7 +38,7 @@ fun Route.initAdminRoute(db: MongoDatabase) {
 
 
     route("/issue") {
-
+        install(RoleBasedAuthorization){roles= listOf("CSR")}
         post("/learner") {
             val data = call.receive<LearnerLicense>()
             licenseCollection.insertOne(data)

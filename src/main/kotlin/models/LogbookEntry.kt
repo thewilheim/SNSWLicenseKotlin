@@ -30,7 +30,7 @@ data class LogbookEntry(
 
         var total: Long = 0
 
-        if(instructorLed && endTime.time - startTime.time < 7200000L) {
+        if(instructorLed && endTime.time - startTime.time < 7200000L && endTime.time - startTime.time >= 3600000L) {
             total = (endTime.time - startTime.time) +  7200000L
         } else {
             total = endTime.time - startTime.time
