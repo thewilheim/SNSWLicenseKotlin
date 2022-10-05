@@ -72,7 +72,7 @@ fun Route.initAccountRoute(db: MongoDatabase) {
 
             val filter = "{email:/^${data.email}$/i}"
             val userTest = accountCollection.findOne(filter)
-            if (userTest != null) {
+            if (userTest == null) {
                 accountCollection.insertOne(user)
 
                 val token = getJWT(user)
