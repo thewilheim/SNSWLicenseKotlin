@@ -69,11 +69,18 @@ fun Route.initAccountRoute(db: MongoDatabase) {
             val data = call.receive<User>()
             val hashed = BCrypt.hashpw(data.password, BCrypt.gensalt())
             val user = User(data.firstName,data.lastName,data.mobile,data.dateOfBirth,data.email, password = hashed,roles = data.roles)
-            accountCollection.insertOne(user)
 
-            val token = getJWT(user)
+            val filter = "{email:/^${data.email}$/i}"
+            val userTest = accountCollection.findOne(filter)
+            if (userTest != null) {
+                accountCollection.insertOne(user)
 
-            call.respond(HttpStatusCode.Created, token)
+                val token = getJWT(user)
+
+                call.respond(HttpStatusCode.Created, token)
+            } else {
+                call.respond(HttpStatusCode.BadRequest, "Duplicate email")
+            }
         }
     }
 
